@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -27,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.security.Security;
 import java.util.Set;
 
 @Configuration
@@ -64,7 +61,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    private SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session
@@ -74,8 +71,8 @@ public class WebSecurityConfig {
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/public/**").permitAll()
-                                .requestMatchers("/api/admin/**").permitAll()
+                                //.requestMatchers("/api/public/**").permitAll()
+                                //.requestMatchers("/api/admin/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()
                                 .anyRequest().authenticated());
@@ -124,27 +121,27 @@ public class WebSecurityConfig {
             Set<Role> sellerRoles=Set.of(sellerRole);
             Set<Role> adminRoles=Set.of(userRole,sellerRole,adminRole);
 
-            if(!userRepository.existsByUserName("user1")){
+            if(!userRepository.existsByUsername("user1")){
                 User user1=new User("user1","user1@example.com",passwordEncoder.encode("password1"));
                 userRepository.save(user1);
             }
-            if(!userRepository.existsByUserName("seller1")){
+            if(!userRepository.existsByUsername("seller1")){
                 User seller1=new User("seller1","seller1@example.com",passwordEncoder.encode("password2"));
                 userRepository.save(seller1);
             }
-            if(!userRepository.existsByUserName("admin")){
+            if(!userRepository.existsByUsername("admin")){
                 User admin=new User("admin","admin@example.com",passwordEncoder.encode("adminPass"));
                 userRepository.save(admin);
             }
-            userRepository.findByUserName("user1").ifPresent(user->{
+            userRepository.findByUsername("user1").ifPresent(user->{
                 user.setRoles(userRoles);
                 userRepository.save(user);
             });
-            userRepository.findByUserName("seller1").ifPresent(seller->{
+            userRepository.findByUsername("seller1").ifPresent(seller->{
                 seller.setRoles(sellerRoles);
                 userRepository.save(seller);
             });
-            userRepository.findByUserName("admin").ifPresent(admin->{
+            userRepository.findByUsername("admin").ifPresent(admin->{
                 admin.setRoles(adminRoles);
                 userRepository.save(admin);
             });
