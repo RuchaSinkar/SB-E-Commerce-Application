@@ -61,7 +61,7 @@ com.ecommerce.project
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/sb-ecom.git
+    git clone https://github.com/RuchaSinkar/sb-ecom.git
     cd sb-ecom
     ```
 
